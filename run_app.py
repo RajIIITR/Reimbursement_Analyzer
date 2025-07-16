@@ -15,7 +15,7 @@ def run_streamlit():
     subprocess.run(["streamlit", "run", "frontend.py"])
 
 if __name__ == "__main__":
-    print("🚀 Starting Invoice Analysis System...")
+    print(" Starting Invoice Analysis System...")
     
     # Start FastAPI in background
     fastapi_thread = threading.Thread(target=run_fastapi, daemon=True)
@@ -25,4 +25,4 @@ if __name__ == "__main__":
     try:
         run_streamlit()
     except KeyboardInterrupt:
-        print("\n🛑 Stopped by user")
+        print("\n Stopped by user")

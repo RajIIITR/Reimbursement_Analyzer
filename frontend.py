@@ -3,12 +3,12 @@ import requests
 import json
 
 # Page config
-st.set_page_config(page_title="Invoice Analysis", page_icon="📄")
+st.set_page_config(page_title="Invoice Analysis", page_icon=":moneybag:", layout="wide")
 
 # Backend URL
 API_URL = "http://localhost:8000"
 
-st.title("📄 Invoice Reimbursement Analysis")
+st.title(" Invoice Reimbursement Analysis")
 st.markdown("---")
 
 # Check if backend is running
@@ -20,10 +20,10 @@ def check_backend():
         return False
 
 if not check_backend():
-    st.error("❌ Backend not running! Please start FastAPI first: `python app.py`")
+    st.error(" Backend not running! Please start FastAPI first: `python app.py`")
     st.stop()
 else:
-    st.success("✅ Backend connected")
+    st.success(" Backend connected")
 
 # Initialize session state
 if 'processed' not in st.session_state:
@@ -41,7 +41,7 @@ with col1:
 with col2:
     invoices_zip = st.file_uploader("Invoices ZIP", type=['zip'])
 
-if st.button("🔍 Process Files"):
+if st.button(" Process Files"):
     if hr_policy and invoices_zip:
         with st.spinner("Processing... Please wait"):
             try:
@@ -56,7 +56,7 @@ if st.button("🔍 Process Files"):
                     result = response.json()
                     st.session_state.processed = True
                     st.session_state.employees = list(result.get('analysis_summary', {}).keys())
-                    st.success("✅ Files processed successfully!")
+                    st.success(" Files processed successfully!")
                     
                     # Show results
                     st.subheader("Results:")
@@ -64,10 +64,10 @@ if st.button("🔍 Process Files"):
                     st.write(f"**Employees:** {', '.join(st.session_state.employees)}")
                     
                 else:
-                    st.error(f"❌ Error: {response.text}")
+                    st.error(f" Error: {response.text}")
                     
             except Exception as e:
-                st.error(f"❌ Error: {str(e)}")
+                st.error(f" Error: {str(e)}")
     else:
         st.warning("Please upload both files")
 
@@ -84,7 +84,7 @@ if st.session_state.processed:
     with col2:
         query = st.text_input("Ask a question:", placeholder="What are my expenses?")
     
-    if st.button("💬 Ask Question"):
+    if st.button(" Ask Question"):
         if employee_name and query:
             try:
                 payload = {"employee_name": employee_name, "query": query}
@@ -95,10 +95,10 @@ if st.session_state.processed:
                     st.subheader("Answer:")
                     st.write(result.get('answer', 'No answer'))
                 else:
-                    st.error(f"❌ Error: {response.text}")
+                    st.error(f" Error: {response.text}")
                     
             except Exception as e:
-                st.error(f"❌ Error: {str(e)}")
+                st.error(f" Error: {str(e)}")
         else:
             st.warning("Please select employee and enter question")
 
