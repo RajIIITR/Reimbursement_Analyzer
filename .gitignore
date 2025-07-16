@@ -1,2 +1,2 @@
-src/__pucache__/*
+src/__pycache__/*
 .env
