@@ -413,11 +413,6 @@ Return the text in markdown format."
 - **Average**: ~30 seconds per invoice (depends on PDF complexity)
 - **Throughput**: ~8 invoices/minute with 4 workers
 
-**Accuracy:**
-- **Text Extraction**: 95%+ for clear PDFs
-- **Vision OCR**: 85%+ for image-based PDFs
-- **Policy Compliance**: 90%+ correct reimbursement decisions
-
 ## 🚀 Deployment Options
 
 ### Local Development
@@ -438,12 +433,6 @@ web: uvicorn app:app --host 0.0.0.0 --port $PORT
 - Deploy on https://share.streamlit.io
 - Set main file as `frontend.py`
 
-### Docker Deployment
-```bash
-# Build and run
-docker build -t invoice-system .
-docker run -p 8000:8000 invoice-system
-```
 
 ## 📊 System Performance
 
@@ -456,16 +445,6 @@ docker run -p 8000:8000 invoice-system
 - 10 invoices ÷ 4 workers × 30 seconds = 1.25 minutes
 - **4x speed improvement**
 
-### Scalability Considerations
-
-**Recommended Worker Counts:**
-- **Small files** (< 10 PDFs): 2-4 workers
-- **Medium files** (10-50 PDFs): 4-8 workers  
-- **Large files** (50+ PDFs): 8-16 workers
-
-**Memory Usage:**
-- **Per worker**: ~100-200MB
-- **Total system**: ~500MB-2GB (depends on PDF size)
 
 ## 🔒 Security Considerations
 
@@ -505,27 +484,7 @@ echo $PINECONE_API_KEY
 - Check system memory usage
 - Optimize PDF file sizes
 
-### Debug Mode
-
-Add debugging to your application:
-```python
-import logging
-logging.basicConfig(level=logging.DEBUG)
-```
-
-## 🤝 Contributing
-
-### Development Setup
-```bash
-# Install development dependencies
-pip install -r requirements.txt
-pip install black pytest flake8
-
-# Run tests
-pytest tests/
-
-# Format code
-black src/ app.py
+#
 ```
 
 ### Code Structure
@@ -534,18 +493,8 @@ black src/ app.py
 - Include docstrings for all functions
 - Handle errors gracefully
 
-## 📄 License
 
-This project is licensed under the MIT License. See the LICENSE file for details.
-
-## 🆘 Support
-
-For issues, questions, or contributions:
-1. Check the troubleshooting section
-2. Review API documentation at `/docs`
-3. Create an issue in the repository
-4. Contact the development team
 
 ---
 
-**Built with ❤️ using FastAPI, Streamlit, Google Gemini, and Pinecone**
+**If You love Do like the Repository.**
