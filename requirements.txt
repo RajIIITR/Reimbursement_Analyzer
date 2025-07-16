@@ -9,7 +9,7 @@ langchain-google-genai
 langchain-pinecone
 pymupdf4llm
 PyMuPDF
-pinecone-client=
+pinecone-client
 sentence-transformers
 python-multipart
 pydantic
