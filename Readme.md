@@ -1,6 +1,6 @@
 # Invoice Reimbursement Analysis System
 
-An intelligent, automated system for analyzing employee invoices against HR reimbursement policies using AI-powered document processing, batch processing capabilities, and natural language querying.
+An intelligent, automated system for analyzing employee invoices against HR reimbursement policies using AI-powered document processing and natural language querying.
 
 ## 📋 Project Overview
 
