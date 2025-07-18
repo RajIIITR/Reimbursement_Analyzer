@@ -49,7 +49,7 @@ The Invoice Reimbursement Analysis System automates the traditionally manual pro
 
 ### Prerequisites
 
-- Python 3.9+
+- Python 3.10
 - Google Cloud API key (for Gemini LLM)
 - Pinecone API key (for vector storage)
 
@@ -57,7 +57,7 @@ The Invoice Reimbursement Analysis System automates the traditionally manual pro
 
 ```bash
 # Clone the repository
-git clone <repository-url>
+git clone https://github.com/RajIIITR/Reimbursement_Analyzer
 cd invoice-reimbursement-system
 
 # Create virtual environment
@@ -66,9 +66,6 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 
 # Install dependencies
 pip install -r requirements.txt
-
-# For Streamlit frontend
-pip install streamlit requests
 ```
 
 ### Step 2: Environment Configuration
@@ -151,14 +148,12 @@ Processes HR policy and employee invoices with batch processing.
 **Parameters:**
 - `hr_policy`: PDF file (multipart/form-data)
 - `invoices_zip`: ZIP file containing invoice PDFs
-- `max_workers`: Number of concurrent workers (default: 4)
 
 **Example:**
 ```bash
 curl -X POST "http://localhost:8000/analyze_invoices" \
   -F "hr_policy=@hr_policy.pdf" \
   -F "invoices_zip=@invoices.zip" \
-  -F "max_workers=8"
 ```
 
 **Response:**
@@ -167,13 +162,10 @@ curl -X POST "http://localhost:8000/analyze_invoices" \
   "message": "Invoice analysis completed successfully using 4 concurrent workers",
   "total_employees": 3,
   "employees_processed": ["John Doe", "Jane Smith", "Bob Johnson"],
-  "processing_info": {
-    "max_workers": 4,
-    "batch_processing": true
   },
   "analysis_summary": {
     "John Doe": {
-      "invoice_count": 2,
+      "invoice_count": 1,
       "invoice_mode": "meal",
       "Reimbursement_Status": "Fully Reimbursed",
       "description": "Lunch at restaurant, total cost ₹450, Date is 15/01/2024..."
@@ -200,7 +192,7 @@ Natural language queries about employee reimbursement data.
 {
   "employee_name": "John Doe",
   "query": "What are my reimbursement details?",
-  "answer": "Based on your invoice data, you have 2 invoices processed..."
+  "answer": "Based on your invoice data, you have 1 invoices processed..."
 }
 ```
 
@@ -222,27 +214,23 @@ Natural language queries about employee reimbursement data.
 **AI and ML:**
 - **LangChain**: Framework for LLM applications and chains
 - **Google Generative AI**: Integration with Gemini LLM
-- **Sentence Transformers**: Text embeddings for vector storage
+- **Sentence Transformers**: Text embeddings for vector storage in HuggingFace
 
 **Document Processing:**
 - **PyMuPDF (fitz)**: PDF text extraction and processing
-- **pymupdf4llm**: LLM-optimized PDF to markdown conversion
+- **pymupdf4llm**: LLM-optimized PDF to markdown conversion (Extension of PyMuPDF)
 - **Pillow**: Image processing for OCR
 
 **Vector Storage:**
 - **Pinecone**: Cloud-based vector database
 - **langchain-pinecone**: LangChain integration for Pinecone
 
-**Concurrency:**
-- **ThreadPoolExecutor**: Built-in Python concurrent processing
-- **asyncio**: Async support for FastAPI
-
 ### LLM and Embedding Model Choices
 
 **Large Language Model: Google Gemini 2.5 Flash**
 - **Reasoning**: Multimodal capabilities (text + vision) for processing invoice images
 - **Speed**: Fast inference suitable for batch processing
-- **Cost-effective**: Competitive pricing for high-volume processing
+- **Cost-effective**: Currently free API key for high-volume processing
 - **Vision support**: Can process PDFs as images when text extraction fails
 
 **Embedding Model: sentence-transformers/all-MiniLM-L6-v2**
@@ -268,7 +256,7 @@ pc.create_index(
 ```python
 # Document format stored in Pinecone
 {
-    "page_content": "Employee: John Doe\nInvoice Count: 2\n...",
+    "page_content": "Employee: John Doe\nInvoice Count: 1\n...",
     "metadata": {
         "employee_name": "John Doe",
         "date": "15/01/2024",
@@ -281,22 +269,6 @@ pc.create_index(
 - **Metadata filtering**: Filter by employee name for precise results
 - **Semantic search**: Use embeddings for contextual understanding
 - **Hybrid approach**: Combine exact matching with semantic similarity
-
-### Batch Processing Implementation
-
-**ThreadPoolExecutor Approach:**
-```python
-with ThreadPoolExecutor(max_workers=4) as executor:
-    futures = {executor.submit(process_pdf, pdf): pdf for pdf in pdf_files}
-    for future in as_completed(futures):
-        result = future.result()
-```
-
-**Benefits:**
-- **Concurrency**: Process multiple invoices simultaneously
-- **Error isolation**: Individual PDF failures don't affect the batch
-- **Scalability**: Adjustable worker count based on system resources
-- **Memory efficiency**: Processes files as they complete
 
 ## 📝 Prompt Design
 
@@ -406,13 +378,6 @@ Return the text in markdown format."
 - Various invoice types (meals, travel, cabs, accommodation)
 - Different employees and amounts
 
-### Performance Metrics
-
-**Processing Speed:**
-- **Batch Processing**: 4x faster than sequential processing
-- **Average**: ~30 seconds per invoice (depends on PDF complexity)
-- **Throughput**: ~8 invoices/minute with 4 workers
-
 ## 🚀 Deployment Options
 
 ### Local Development
@@ -434,18 +399,6 @@ web: uvicorn app:app --host 0.0.0.0 --port $PORT
 - Set main file as `frontend.py`
 
 
-## 📊 System Performance
-
-### Batch Processing Benefits
-
-**Sequential Processing:**
-- 10 invoices × 30 seconds = 5 minutes
-
-**Batch Processing (4 workers):**
-- 10 invoices ÷ 4 workers × 30 seconds = 1.25 minutes
-- **4x speed improvement**
-
-
 ## 🔒 Security Considerations
 
 ### Data Protection
@@ -459,6 +412,7 @@ web: uvicorn app:app --host 0.0.0.0 --port $PORT
 - Implement rate limiting
 - Add authentication for sensitive data
 - Regular security updates
+- May Add Batch Processing to reduce latency
 
 ## 🐛 Troubleshooting
 
