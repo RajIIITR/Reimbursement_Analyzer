@@ -14,7 +14,7 @@ The Invoice Reimbursement Analysis System automates the traditionally manual pro
 
 ### Key Capabilities
 
-✅ **Multi-format Support**: Handles PDFs with text extraction and OCR vision models  
+✅ **Multi-format Support**: Handles PDFs with text extraction and OCR vision models (In our case it is Google Gemini 2.5 but we can use Pytesseract I preferred Gemini model due to it's latency) 
 ✅ **Batch Processing**: Concurrent processing of multiple invoices using ThreadPoolExecutor  
 ✅ **AI-Powered Analysis**: Google Gemini LLM for intelligent document understanding  
 ✅ **Vector Search**: Pinecone integration for efficient data retrieval  
