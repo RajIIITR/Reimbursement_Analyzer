@@ -14,8 +14,7 @@ The Invoice Reimbursement Analysis System automates the traditionally manual pro
 
 ### Key Capabilities
 
-✅ **Multi-format Support**: Handles PDFs with text extraction and OCR vision models (In our case it is Google Gemini 2.5 but we can use Pytesseract I preferred Gemini model due to it's latency) <br>
-✅ **Batch Processing**: Concurrent processing of multiple invoices using ThreadPoolExecutor  
+✅ **Multi-format Support**: Handles PDFs with text extraction and OCR vision models (In our case it is Google Gemini 2.5 but we can use Pytesseract I preferred Gemini model due to it's latency) <br> 
 ✅ **AI-Powered Analysis**: Google Gemini LLM for intelligent document understanding  
 ✅ **Vector Search**: Pinecone integration for efficient data retrieval  
 ✅ **Employee Chatbot**: Natural language queries about reimbursement status  
@@ -159,7 +158,7 @@ curl -X POST "http://localhost:8000/analyze_invoices" \
 **Response:**
 ```json
 {
-  "message": "Invoice analysis completed successfully using 4 concurrent workers",
+  "message": "Invoice analysis completed successfully",
   "total_employees": 3,
   "employees_processed": ["John Doe", "Jane Smith", "Bob Johnson"],
   },
@@ -219,7 +218,7 @@ Natural language queries about employee reimbursement data.
 **Document Processing:**
 - **PyMuPDF (fitz)**: PDF text extraction and processing
 - **pymupdf4llm**: LLM-optimized PDF to markdown conversion (Extension of PyMuPDF)
-- **Pillow**: Image processing for OCR
+- **Pillow**: Image processing for OCR (Google Gemini 2.5)
 
 **Vector Storage:**
 - **Pinecone**: Cloud-based vector database
@@ -434,12 +433,10 @@ echo $PINECONE_API_KEY
 - Ensure ZIP contains valid PDFs
 
 **3. Performance Issues**
-- Reduce `max_workers` for limited resources
 - Check system memory usage
 - Optimize PDF file sizes
 
 #
-```
 
 ### Code Structure
 - Keep functions focused and single-purpose
@@ -449,6 +446,5 @@ echo $PINECONE_API_KEY
 
 
 
----
 
 **If You love Do like the Repository.**
