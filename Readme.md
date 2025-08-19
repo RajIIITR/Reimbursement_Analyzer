@@ -2,7 +2,7 @@
 
 An intelligent, automated system for analyzing employee invoices against HR reimbursement policies using AI-powered document processing and natural language querying.
 
-## 📋 Project Overview
+## Project Overview
 
 The Invoice Reimbursement Analysis System automates the traditionally manual process of reviewing employee expense claims. The system:
 
@@ -14,27 +14,12 @@ The Invoice Reimbursement Analysis System automates the traditionally manual pro
 
 ### Key Capabilities
 
-✅ **Multi-format Support**: Handles PDFs with text extraction and OCR vision models (In our case it is Google Gemini 2.5 but we can use Pytesseract I preferred Gemini model due to it's latency) <br> 
-✅ **AI-Powered Analysis**: Google Gemini LLM for intelligent document understanding  
-✅ **Vector Search**: Pinecone integration for efficient data retrieval  
-✅ **Employee Chatbot**: Natural language queries about reimbursement status  
-✅ **Web Interface**: Simple Streamlit frontend for testing and demonstration  
+**Multi-format Support**: Handles PDFs with text extraction using PyPDF4llm and OCR vision models (In our case it is Google Gemini 2.5 but we can use Pytesseract I preferred Gemini model due to it's latency) <br> 
+**AI-Powered Analysis**: Google Gemini LLM for intelligent document understanding  
+**Vector Search**: Pinecone integration for efficient data retrieval  
+**Employee Chatbot**: Natural language queries about reimbursement status  
+**Web Interface**: Simple Streamlit frontend for testing and demonstration  
 
-## 🏗️ Architecture
-
-```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   Streamlit     │    │    FastAPI      │    │    Pinecone     │
-│   Frontend      │───▶│    Backend      │───▶│  Vector Store   │
-│                 │    │                 │    │                 │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-                              │
-                              ▼
-                    ┌─────────────────┐
-                    │  Google Gemini  │
-                    │      LLM        │
-                    └─────────────────┘
-```
 
 ### Data Flow
 
@@ -60,8 +45,8 @@ git clone https://github.com/RajIIITR/Reimbursement_Analyzer
 cd invoice-reimbursement-system
 
 # Create virtual environment
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+conda create -p Reimbursement_Analysis python==3.10 -y
+conda activate Reimbursement_Analysis/
 
 # Install dependencies
 pip install -r requirements.txt
@@ -109,7 +94,7 @@ invoice-reimbursement-system/
 └── README.md
 ```
 
-## 🚀 Usage Guide
+## Usage Guide
 
 ### Method 1: Complete Web Interface
 
@@ -137,7 +122,7 @@ python app.py
 python main.py
 ```
 
-## 📚 API Endpoints
+## API Endpoints
 
 ### 1. Analyze Invoices
 **POST** `/analyze_invoices`
@@ -156,7 +141,7 @@ curl -X POST "http://localhost:8000/analyze_invoices" \
 ```
 
 **Response:**
-```json
+```json  
 {
   "message": "Invoice analysis completed successfully",
   "total_employees": 3,
@@ -228,7 +213,6 @@ Natural language queries about employee reimbursement data.
 
 **Large Language Model: Google Gemini 2.5 Flash**
 - **Reasoning**: Multimodal capabilities (text + vision) for processing invoice images
-- **Speed**: Fast inference suitable for batch processing
 - **Cost-effective**: Currently free API key for high-volume processing
 - **Vision support**: Can process PDFs as images when text extraction fails
 
@@ -269,7 +253,7 @@ pc.create_index(
 - **Semantic search**: Use embeddings for contextual understanding
 - **Hybrid approach**: Combine exact matching with semantic similarity
 
-## 📝 Prompt Design
+## Prompt Design
 
 ### Invoice Analysis Prompt
 
@@ -363,7 +347,7 @@ Return the text in markdown format."
 - **Format specification**: Markdown for consistent structure
 - **Focused task**: Single, well-defined objective per prompt
 
-## 🧪 Testing and Validation
+## Testing and Validation
 
 ### Test Data Requirements
 
@@ -377,7 +361,7 @@ Return the text in markdown format."
 - Various invoice types (meals, travel, cabs, accommodation)
 - Different employees and amounts
 
-## 🚀 Deployment Options
+## Deployment Options
 
 ### Local Development
 ```bash
@@ -389,60 +373,23 @@ python run_app.py
 **Backend (Render/Railway/Heroku):**
 ```bash
 # Procfile
-web: uvicorn app:app --host 0.0.0.0 --port $PORT
+web: uvicorn app:app 
 ```
 
-**Frontend (Streamlit Cloud):**
-- Push to GitHub
-- Deploy on https://share.streamlit.io
-- Set main file as `frontend.py`
 
-
-## 🔒 Security Considerations
+## Security Considerations
 
 ### Data Protection
 - **File validation**: Strict PDF/ZIP format checking
 - **Temporary files**: Automatic cleanup after processing
 - **API keys**: Environment variable storage
-- **Input sanitization**: Prevents injection attacks
 
-### Best Practices
-- Use HTTPS in production
-- Implement rate limiting
-- Add authentication for sensitive data
-- Regular security updates
-- May Add Batch Processing to reduce latency
 
-## 🐛 Troubleshooting
 
-### Common Issues
-
-**1. API Connection Errors**
-```bash
-# Check if backend is running
-curl http://localhost:8000/health
-
-# Check environment variables
-echo $GOOGLE_API_KEY
-echo $PINECONE_API_KEY
-```
-
-**2. File Processing Errors**
-- Verify PDF is not corrupted
-- Check file size limits
-- Ensure ZIP contains valid PDFs
-
-**3. Performance Issues**
-- Check system memory usage
-- Optimize PDF file sizes
-
-#
-
-### Code Structure
-- Keep functions focused and single-purpose
-- Add type hints for better code clarity
+### Code Structure (Which I maintain from myside)
+- Keeping functions focused and single-purpose
 - Include docstrings for all functions
-- Handle errors gracefully
+- Handle errors 
 
 
 
