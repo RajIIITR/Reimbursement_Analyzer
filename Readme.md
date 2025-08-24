@@ -65,7 +65,6 @@ invoice-reimbursement-system/
   "message": "Invoice analysis completed successfully",
   "total_employees": 3,
   "employees_processed": ["John Doe", "Jane Smith", "Bob Johnson"],
-  },
   "analysis_summary": {
     "John Doe": {
       "invoice_count": 1,
