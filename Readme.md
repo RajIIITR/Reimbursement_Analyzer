@@ -29,54 +29,9 @@ The Invoice Reimbursement Analysis System automates the traditionally manual pro
 4. **Store**: Processed data in Pinecone vector database
 5. **Query**: Natural language search for employee-specific information
 
-## 🛠️ Installation Instructions
 
-### Prerequisites
 
-- Python 3.10
-- Google Cloud API key (for Gemini LLM)
-- Pinecone API key (for vector storage)
-
-### Step 1: Clone and Setup
-
-```bash
-# Clone the repository
-git clone https://github.com/RajIIITR/Reimbursement_Analyzer
-cd invoice-reimbursement-system
-
-# Create virtual environment
-conda create -p Reimbursement_Analysis python==3.10 -y
-conda activate Reimbursement_Analysis/
-
-# Install dependencies
-pip install -r requirements.txt
-```
-
-### Step 2: Environment Configuration
-
-Create a `.env` file in the root directory:
-
-```bash
-# .env file
-GOOGLE_API_KEY=your_google_gemini_api_key_here
-PINECONE_API_KEY=your_pinecone_api_key_here
-```
-
-### Step 3: Get API Keys
-
-**Google Gemini API Key:**
-1. Go to [Google Cloud Console](https://console.cloud.google.com/)
-2. Enable the Gemini API
-3. Create an API key
-4. Copy the key to your `.env` file
-
-**Pinecone API Key:**
-1. Sign up at [Pinecone](https://pinecone.io)
-2. Create a new project
-3. Go to API Keys section
-4. Copy the API key to your `.env` file
-
-### Step 4: Project Structure
+### Project Structure
 
 ```
 invoice-reimbursement-system/
@@ -94,53 +49,17 @@ invoice-reimbursement-system/
 └── README.md
 ```
 
-## Usage Guide
 
-### Method 1: Complete Web Interface
-
-```bash
-# Start both FastAPI backend and Streamlit frontend
-python run_app.py
-```
-
-Access the application:
-- **Frontend**: http://localhost:8501
-- **Backend API**: http://localhost:8000
-- **API Docs**: http://localhost:8000/docs
-
-### Method 2: API Only
-
-```bash
-# Start FastAPI backend only
-python app.py
-```
-
-### Method 3: Standalone Processing
-
-```bash
-# Edit file paths in main.py, then run
-python main.py
-```
-
-## API Endpoints
-
-### 1. Analyze Invoices
-**POST** `/analyze_invoices`
-
-Processes HR policy and employee invoices with batch processing.
+### **API Docs**: 
+  - http://localhost:8000/docs  (We can check our swagger UI here)
 
 **Parameters:**
 - `hr_policy`: PDF file (multipart/form-data)
 - `invoices_zip`: ZIP file containing invoice PDFs
 
-**Example:**
-```bash
-curl -X POST "http://localhost:8000/analyze_invoices" \
-  -F "hr_policy=@hr_policy.pdf" \
-  -F "invoices_zip=@invoices.zip" \
-```
 
-**Response:**
+
+**(The Entire flow of data in our code base)**
 ```json  
 {
   "message": "Invoice analysis completed successfully",
@@ -158,20 +77,8 @@ curl -X POST "http://localhost:8000/analyze_invoices" \
 }
 ```
 
-### 2. Query Employee Data
-**POST** `/query_employee`
 
-Natural language queries about employee reimbursement data.
-
-**Request Body:**
-```json
-{
-  "employee_name": "John Doe",
-  "query": "What are my reimbursement details?"
-}
-```
-
-**Response:**
+**Sample Output & User Question**
 ```json
 {
   "employee_name": "John Doe",
@@ -179,14 +86,6 @@ Natural language queries about employee reimbursement data.
   "answer": "Based on your invoice data, you have 1 invoices processed..."
 }
 ```
-
-### 3. Additional Endpoints
-
-- **GET** `/health` - Health check
-- **GET** `/employees` - List all processed employees
-- **GET** `/employee/{name}` - Get specific employee details
-
-## 🔧 Technical Details
 
 ### Libraries and Dependencies
 
@@ -209,7 +108,7 @@ Natural language queries about employee reimbursement data.
 - **Pinecone**: Cloud-based vector database
 - **langchain-pinecone**: LangChain integration for Pinecone
 
-### LLM and Embedding Model Choices
+### LLM and Embedding Model Choices (Giving Answer to Why?)
 
 **Large Language Model: Google Gemini 2.5 Flash**
 - **Reasoning**: Multimodal capabilities (text + vision) for processing invoice images
@@ -222,132 +121,12 @@ Natural language queries about employee reimbursement data.
 - **Performance**: Good balance between speed and accuracy
 - **Multilingual**: Supports multiple languages for global use
 
-### Vector Store Integration Approach
-
-**Pinecone Configuration:**
-```python
-# Index creation
-pc.create_index(
-    name="employee-database",
-    dimension=384,  # Matches embedding model
-    metric="cosine",  # Semantic similarity
-    spec=ServerlessSpec(cloud="aws", region="us-east-1")
-)
-```
-
-**Data Structure:**
-```python
-# Document format stored in Pinecone
-{
-    "page_content": "Employee: John Doe\nInvoice Count: 1\n...",
-    "metadata": {
-        "employee_name": "John Doe",
-        "date": "15/01/2024",
-        "document_type": "employee_record"
-    }
-}
-```
 
 **Search Strategy:**
 - **Metadata filtering**: Filter by employee name for precise results
 - **Semantic search**: Use embeddings for contextual understanding
 - **Hybrid approach**: Combine exact matching with semantic similarity
 
-## Prompt Design
-
-### Invoice Analysis Prompt
-
-**Design Philosophy:**
-- **Structured output**: Enforces consistent format for parsing
-- **Context-aware**: Includes HR policy for decision-making
-- **Comprehensive**: Covers all invoice types and scenarios
-
-**Template Structure:**
-```python
-def get_extraction_prompt(state):
-    return f"""
-    Extract invoice information and identify the EMPLOYEE NAME.
-    
-    EMPLOYEE NAME RULES:
-    - For MEAL invoices: Look for "Customer Name"
-    - For TRAVEL invoices: Look for "Passenger Details"
-    - For CAB invoices: Look for "Customer Name"
-    
-    REIMBURSEMENT STATUS ANALYSIS:
-    Based on the HR reimbursement policy below:
-    {state.get('md_text', '')}
-    
-    **Reimbursement Status Categories:**
-    - **Fully Reimbursed**: Entire amount reimbursable
-    - **Partially Reimbursed**: Only portion reimbursable  
-    - **Declined**: Not reimbursable per policy
-    
-    FORMAT:
-    **EMPLOYEE NAME:** [exact name]
-    **REIMBURSEMENT STATUS:** [status]
-    **INVOICE DETAILS:**
-    - Invoice Type: [type]
-    - Date: [date]
-    - Total Amount: [amount]
-    - Reason: [explanation]
-    """
-```
-
-**Key Design Elements:**
-1. **Clear Instructions**: Specific rules for different invoice types
-2. **Policy Integration**: Dynamic inclusion of HR policy context
-3. **Structured Output**: Consistent format for easy parsing
-4. **Reasoning Required**: Asks for explanation of decisions
-
-### Chatbot Interaction Prompt
-
-**Design Philosophy:**
-- **Context-grounded**: Uses retrieved employee data
-- **Conversational**: Natural, helpful responses
-- **Concise**: Direct answers without unnecessary verbosity
-
-**Template:**
-```python
-def get_query_response_prompt():
-    return """
-    You are an HR assistant AI. Use the following employee information 
-    to answer the user's question.
-    
-    Employee Data:
-    {context}
-    
-    User Question:
-    {question}
-    
-    Give a concise, helpful, and context-grounded answer.
-    """
-```
-
-**Prompt Engineering Techniques:**
-1. **Role Definition**: Clear AI assistant role
-2. **Context Injection**: Relevant employee data included
-3. **Response Guidelines**: Specific instruction for answer quality
-4. **Grounding**: Emphasizes using provided context
-
-### Vision Model Prompts
-
-**For Policy Extraction:**
-```python
-"Extract the HR Reimbursement policy from this image. 
-Return the text in markdown format."
-```
-
-**For Invoice Processing:**
-```python
-"Extract all text and details from this invoice image:"
-```
-
-**Design Rationale:**
-- **Simple and clear**: Avoid complex instructions that confuse vision models
-- **Format specification**: Markdown for consistent structure
-- **Focused task**: Single, well-defined objective per prompt
-
-## Testing and Validation
 
 ### Test Data Requirements
 
@@ -360,38 +139,5 @@ Return the text in markdown format."
 - Mixed formats (text-based and image-based PDFs)
 - Various invoice types (meals, travel, cabs, accommodation)
 - Different employees and amounts
-
-## Deployment Options
-
-### Local Development
-```bash
-python run_app.py
-```
-
-### Cloud Deployment
-
-**Backend (Render/Railway/Heroku):**
-```bash
-# Procfile
-web: uvicorn app:app 
-```
-
-
-## Security Considerations
-
-### Data Protection
-- **File validation**: Strict PDF/ZIP format checking
-- **Temporary files**: Automatic cleanup after processing
-- **API keys**: Environment variable storage
-
-
-
-### Code Structure (Which I maintain from myside)
-- Keeping functions focused and single-purpose
-- Include docstrings for all functions
-- Handle errors 
-
-
-
 
 **If You love Do like the Repository.**
